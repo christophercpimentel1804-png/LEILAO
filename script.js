@@ -1,4 +1,3 @@
-// Lista dos jogadores por posição
 const jogadoresPosicoes = {
   "Goleiros": [
     "Courtois","Alisson","Marmadashivele","Chavalie","Magnan","Donnaruma","Pope","Pickford","Oblack","Joan Garcia","Ederson"
@@ -30,50 +29,57 @@ const jogadoresPosicoes = {
     "Son","Thuram","Schick","Lukaku","Sorloth","Lookman","Openda","Mateta","David","Talisca","Kolo Muani","Rashford"
   ]
 };
+
 let jogadores = Object.entries(jogadoresPosicoes)
-  .flatMap(([pos,arr])=>arr.map(n=>({name:n,pos,selected:false,bids:[]})));
-let users = [];
+  .flatMap(([pos,arr])=>arr.map(n=>({name:n,pos,selected:false,bids:[],comprador:null})));
+let users = []; // [{name, jogadores:[...] }]
 let chatMsgs = [];
 let leilao = [];
 let currentPlayerIndex = 0;
 let isAdmin = false;
 let nomeUsuarioAtual = "";
 
-// Toast
-function toast(msg){
-  const t=document.getElementById('toast');
-  t.innerHTML=msg;t.classList.remove('hidden');
-  setTimeout(()=>t.classList.add('hidden'),1700);
+// Painel ADM com senha
+function entrarPainelADM(){
+  const senha = document.getElementById('admSenhaInput').value.trim();
+  if(senha==="1804"){
+    hide('admSenhaSection');show('adminPanel');isAdmin=true;
+    renderADMUsers();renderADMJogadoresPorPosicao();renderADMConfirmados();toast("Acesso ADM liberado!");
+  }else{
+    toast("Senha incorreta!");
+  }
 }
 
-// Entrar
+// Entrada pelo nome
 function enterAuction(){
   const name=document.getElementById('userNameInput').value.trim();
   if(!name){toast("Digite o nome!");return;}
   nomeUsuarioAtual=name;
   hide('entrySection');show('btnLogout');
   if(name.toLowerCase()==="adm"){
-    isAdmin=true;show('adminPanel');
-    renderADMUsers();
-    renderADMJogadoresPorPosicao();
-    renderADMConfirmados();
-    toast("Bem-vindo, ADM!");
+    hide('entrySection');show('admSenhaSection'); // Pede senha ADM
   }else{
-    users.push({name:name});
+    // Adiciona usuário e mostra lobby para todos
+    let idx = users.findIndex(u=>u.name===name);
+    if(idx===-1){
+      users.push({name:name,jogadores:[]});
+      if(isAdmin)renderADMUsers();
+    }
     show('userLobby');renderUsersLobby();
     toast(`Bem-vindo, ${name.split(" ")[0]}!`);
-    if(isAdmin){renderADMUsers();}
   }
 }
 document.getElementById('btnLogout').onclick = ()=>location.reload();
 function show(id){document.getElementById(id).classList.remove('hidden');}
 function hide(id){document.getElementById(id).classList.add('hidden');}
 
-// Usuários do lobby
+// Usuários no lobby
 function renderUsersLobby(){
   document.getElementById('userList').innerHTML=users.map(u=>`<li class="list-box-item">${u.name}</li>`).join('');
+  renderUserFormation();
 }
-// ADM vê todos jogadores
+
+// ADM vê todos participantes
 function renderADMUsers(){
   document.getElementById('admUserList').innerHTML=users.length==0 ?
     `<li class="list-box-item">Nenhum participante ainda</li>` :
@@ -114,7 +120,7 @@ window.confirmarLeilao=function(){
   toast("Leilão confirmado e iniciado!");
 };
 
-// Painel do leilão + chat
+// Leilão + chat + formação dos jogadores comprados
 function renderAuctionPlayer(){
   const p=leilao[currentPlayerIndex];
   const card=document.getElementById('auctionPlayerCard');
@@ -131,7 +137,7 @@ function renderAuctionPlayer(){
       <span style="font-weight:bold">${p.pos}: ${p.name}</span>
     </div>
     <div style="margin-top:8px;">
-      Lance atual: <b style="color:#ff6600;">${p.bids.length?'R$'+Math.max(...p.bids):'---'}</b>
+      Lance atual: <b style="color:#ff6600;">${p.bids.length?'R$'+Math.max(...p.bids.map(b=>b.valor)):'---'}</b>
     </div>`;
   renderBids();
 }
@@ -140,12 +146,21 @@ window.placeBid=function(){
   const bid=Number(bidInput.value);
   const p=leilao[currentPlayerIndex];
   if(!p){toast("Nenhum jogador disponível!");return;}
-  const minBid=p.bids.length?Math.max(...p.bids)+1:10;
+  const minBid=p.bids.length?Math.max(...p.bids.map(b=>b.valor))+1:10;
   if(bid>=minBid){
-    p.bids.push(bid);bidInput.value='';
+    p.bids.push({valor:bid,usuario:nomeUsuarioAtual});
+    bidInput.value='';
     toast(`Lance R$${bid} registrado!`);renderAuctionPlayer();
     addChatMsg(nomeUsuarioAtual,`deu lance de R$${bid} em ${p.name}`);
     renderChat();
+    // Ao final, define comprador:
+    p.comprador = nomeUsuarioAtual;
+    let idxUser = users.findIndex(u=>u.name===nomeUsuarioAtual);
+    if(idxUser!==-1){
+      users[idxUser].jogadores = users[idxUser].jogadores||[];
+      users[idxUser].jogadores.push(p);
+      renderUserFormation();
+    }
   }else{toast(`Lance deve ser maior que o atual/min!`);}
 };
 window.passBid=function(){
@@ -164,7 +179,8 @@ window.passBid=function(){
 function renderBids(){
   const p=leilao[currentPlayerIndex];
   document.getElementById('bidsList').innerHTML=p&&p.bids.length
-    ?"<ul style='padding-left:6px;'>"+p.bids.map((b,i)=>`<li style="margin-bottom:6px;">Lance ${i+1}: <b style="color:#fd913d;">R$${b}</b></li>`).join('')+"</ul>"
+    ?"<ul style='padding-left:6px;'>"+p.bids.map((b,i)=>
+      `<li style="margin-bottom:6px;">${b.usuario}: <b style="color:#fd913d;">R$${b.valor}</b></li>`).join('')+"</ul>"
     :"<p>Seja o primeiro a dar lance!</p>";
 }
 // Chat global
@@ -174,4 +190,38 @@ function addChatMsg(user,texto){
 function renderChat(){
   document.getElementById('chatGlobal').innerHTML=chatMsgs.map(m=>
     `<div class="chat-msg"><b>${m.user}</b> <span style="color:#fd913d">@${m.horario}:</span> ${m.texto}</div>`).join('');
+}
+
+// Formação (grid 4-3-3) do usuário participante
+function renderUserFormation(){
+  let idx = users.findIndex(u=>u.name===nomeUsuarioAtual);
+  if(idx===-1)return;
+  const jogs = users[idx].jogadores || [];
+  let formMap = [
+    {name:"GOL",col:2,row:1},
+    {name:"ZAG",col:1,row:2},{name:"ZAG",col:3,row:2},
+    {name:"LE",col:1,row:3},{name:"MD",col:2,row:3},{name:"LD",col:3,row:3},
+    {name:"MC",col:2,row:4},{name:"MC",col:3,row:4},{name:"MC",col:1,row:4},
+    {name:"ATA",col:2,row:5},{name:"ATA",col:3,row:5},{name:"ATA",col:1,row:5}
+  ];
+  let grid = document.getElementById('userFormation');
+  grid.innerHTML="";
+  let formJogs = jogs.slice(0,11);
+  let idxGrid = 0;
+  for(let i=0;i<4*4;i++){
+    let cell = document.createElement("div");
+    cell.className = "formation-cell";
+    let jogador = formJogs[idxGrid]?formJogs[idxGrid].name:"";
+    cell.textContent = jogador || "";
+    grid.appendChild(cell);
+    idxGrid++;
+    if(idxGrid>=formJogs.length){break;}
+  }
+}
+
+// Toast animado
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.innerHTML=msg;t.classList.remove('hidden');
+  setTimeout(()=>t.classList.add('hidden'),1700);
 }
