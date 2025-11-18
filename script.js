@@ -1,111 +1,118 @@
-// Saldo dos usuários
-let usuarios = {}; // nome -> saldo
-
-// Jogadores cadastrados
-let jogadores = [
-  { name: "Courtois", overall: 89, pace: 59, def: 88, position: "GOL", selected:false, bids:[] },
-  { name: "Nuno Mendes", overall: 86, pace: 92, def: 80, position: "LE", selected:false, bids:[] },
-  { name: "Mbappé", overall: 91, pace: 97, def: 37, position: "ATA", selected:false, bids:[] }
+// Lista dos jogadores (somente nomes, conforme enviado pelo usuário)
+const jogadoresAll = [
+  "Courtois","Alisson","Marmadashivele","Chavalie","Magnan","Donnaruma","Pope","Pickford","Oblack","Joan Garcia","Ederson",
+  "Nuno Mendes","Balde","Grimaldo","Hernandez","Davies","Cucurella","Gvardiol","Robertson","Robinson","Raum","Kerkez",
+  "Mendy","Ait-nouri","Aina","Raphael Guerreiro","Mittelstadt","Gaya","Digne","Carreras","Fran Garcia",
+  "Kimmich","Hakimi","Kounde","Arnold","Carvajal","Llorente","Cancelo","Dumfries","Di Lorenzo","Fimpong",
+  "Laimer","Pedro Porro","Reece James","Trippier","Mazeaoui","Walker","Muñoz","Darmian","Doan","Stones","Araujo",
+  "Van Dijk","Gabriel Magalhaes","Marquinhos","Jhonata Tah","Bastoni","Saliba","Rudiguer","Konaté","Ruben Dias","Pacho",
+  "Inigo Martinez","Ibanez","Murilo","Upamecano","Bremer","Schlotterbeck","De Vrij","Acerbi","Pavard","Éder Militao","Vivian Moreno",
+  "Aké","Gimenez","Le Normand","Hincapie","Konsa","Anton","Van de Ven",
+  "Salah","Mbappe","Dembele","Rodri","Bellingham","Raphinha","Vini Jr","Valverde","Pedri","Vitinho","De Jong",
+  "Yamal","Saka","Musiala","Wirtz","De Bruyne","Odegaard","Barella","Rice","Mac Allister","Kvaratskhelia",
+  "Caicedo","Palmer","Messi","Çalhanoglu","Reijnders","Tonali","Bruno Gruimaraes","Olisie","Nico Williams",
+  "Benzema","Cristiano","Griezmann","Kante","Fabian Ruiz","Luis Dias","Phil Foden","Mbeumo","Rodrygo","Gravenberch",
+  "Doue","Joao Neves","Bernardo Silva","Pulisic","Rafael Leao","Tchouameni","Gakpo","Simons","Enzo Fernandez",
+  "Marmoush","Barcola","Modric","Mane","Diaby","Coman","Ayoze","Iñaki Williams","Merino","Eze","Matheus Cunha",
+  "Gordon","Camavinga","Ekitike","Savinha","Adeyemi",
+  "Haaland","Kane","Lewandowski","Lautaro","Isak","Guirassy","Osimhen","Gyokeres","Alvarez",
+  "Son","Thuram","Schick","Lukaku","Sorloth","Lookman","Openda","Mateta","David","Talisca","Kolo Muani","Rashford"
 ];
+let jogadores = jogadoresAll.map(n=>({name:n,selected:false,bids:[]})); // Array que será filtrado para leilão
+
+let users = []; // participantes {name, money}
+let chatMsgs = [];
 let leilao = [];
 let currentPlayerIndex = 0;
 let isAdmin = false;
+let nomeUsuarioAtual = "";
 
 // Toast animado
 function toast(msg) {
   const t = document.getElementById('toast');
   t.innerHTML = msg;
   t.classList.remove('hidden');
-  setTimeout(()=> t.classList.add('hidden'), 1800);
+  setTimeout(()=> t.classList.add('hidden'), 1700);
 }
 
 // Entrada pelo nome
 function enterAuction() {
   const name = document.getElementById('userNameInput').value.trim();
   if (!name) { toast("Digite o nome!"); return; }
+  nomeUsuarioAtual = name;
   hide('entrySection');
   show('btnLogout');
   if (name.toLowerCase() === "adm") {
-    show('adminPanel');
     isAdmin = true;
-    toast("Bem-vindo, ADM!");
-    renderAdminPlayers();
+    show('adminPanel');
+    renderADMUsers();
+    renderADMJogadores();
     renderLeilaoSelect();
-    renderUsuariosMoney();
+    toast("Bem-vindo, ADM!");
   } else {
-    show('auctionPanel');
-    renderAuctionPlayer();
-    isAdmin = false;
-    toast(`Boa sorte, ${name.split(" ")[0]}!`);
+    // Adiciona usuário e mostra lobby para todos
+    users.push({name:name,money:0});
+    show('userLobby');
+    renderUsersLobby();
+    toast(`Bem-vindo, ${name.split(" ")[0]}!`);
   }
 }
 document.getElementById('btnLogout').onclick = () => location.reload();
+
 function show(id) { document.getElementById(id).classList.remove('hidden'); }
 function hide(id) { document.getElementById(id).classList.add('hidden'); }
 
-// ADM adiciona/atualiza saldo
-document.getElementById('addUserForm').onsubmit = function(e){
+// PARTICIPANTES: lista na tela inicial
+function renderUsersLobby() {
+  // Usuários participantes
+  document.getElementById('userList').innerHTML = users
+    .map(u=>`<li class="list-box-item">${u.name}</li>`).join('');
+  document.getElementById('userBalanceList').innerHTML = users
+    .map(u=>`<li class="list-box-item">${u.name}: <span>💰 R$ ${u.money || 0}</span></li>`).join('');
+}
+
+// ADM vê todos participantes para definir saldo
+function renderADMUsers() {
+  document.getElementById('admUserList').innerHTML = users.length==0
+    ? `<li class="list-box-item">Nenhum participante ainda</li>`
+    : users.map(u=>`<li class="list-box-item">${u.name}: <span>💰 R$ ${u.money||0}</span></li>`).join('');
+}
+// ADM escolhe saldo do participante
+document.getElementById('addUserMoneyForm').onsubmit = function(e){
   e.preventDefault();
-  const nome = document.getElementById('admUserName').value.trim();
+  const nome = document.getElementById('admUserNameMoney').value.trim();
   const saldo = Number(document.getElementById('admUserMoney').value);
   if(!nome || saldo<1) { toast("Preencha nome e saldo!"); return;}
-  usuarios[nome] = saldo;
-  renderUsuariosMoney();
-  document.getElementById('addUserForm').reset();
-  toast(`Saldo de ${nome} definido: R$${saldo}`);
-};
-function renderUsuariosMoney(){
-  const div = document.getElementById('userMoneyList');
-  if(Object.keys(usuarios).length==0) return div.innerHTML="<em>Nenhum saldo definido.</em>";
-  div.innerHTML = Object.entries(usuarios).map(([nome,valor]) =>
-    `<div class="list-box-item"><span>${nome}</span><span>💰 R$${valor}</span></div>`
-  ).join('');
-}
-
-// ADM adiciona jogador
-document.getElementById('addPlayerForm').onsubmit = function(e) {
-  e.preventDefault();
-  const name = document.getElementById('playerName').value.trim();
-  const overall = Number(document.getElementById('playerOverall').value);
-  const pace = Number(document.getElementById('playerPace').value);
-  const def = Number(document.getElementById('playerDef').value);
-  const position = document.getElementById('playerPosition').value || "MID";
-  if (!name || overall < 50 || pace < 1 || def < 1 || !position) {
-    toast("Preencha todos os campos corretamente!");
-    return;
+  let idx = users.findIndex(u=>u.name===nome);
+  if(idx!==-1){
+    users[idx].money = saldo;
+    toast(`Saldo de ${nome} atualizado para R$${saldo}`);
+  } else {
+    users.push({name:nome,money:saldo});
+    toast(`Usuário ${nome} e saldo adicionado!`);
   }
-  jogadores.push({ name, overall, pace, def, position, selected:false, bids:[] });
-  renderAdminPlayers();
-  renderLeilaoSelect();
-  document.getElementById('addPlayerForm').reset();
-  toast(`Jogador ${name} adicionado!`);
+  renderADMUsers();
+  renderUsersLobby();
+  document.getElementById('addUserMoneyForm').reset();
 };
 
-// Lista direta
-function renderAdminPlayers(){
-  const container = document.getElementById('adminPlayersList');
-  if (jogadores.length === 0) {
-    container.innerHTML = "<em>Nenhum jogador cadastrado...</em>";
-    return;
-  }
-  container.innerHTML = jogadores.map((p,i) =>
-    `<div class="list-box-item">
-      <span><b>${p.name} (${p.position})</b> | OVR: ${p.overall} | Ritmo: ${p.pace} | Defesa: ${p.def}</span>
-    </div>`
-  ).join('');
+// ADM: lista de jogadores para seleção
+function renderADMJogadores(){
+  document.getElementById('admJogadorList').innerHTML = jogadores
+    .map((j,i)=>`<div class="list-box-item">
+      <span>${j.name}</span>
+    </div>`).join('');
 }
 
-// Seleção de jogadores para leilão
+// Seleção de jogadores para o leilão
 function renderLeilaoSelect(){
-  const box = document.getElementById('leilaoSelectList');
-  box.innerHTML = jogadores
+  document.getElementById('leilaoSelectList').innerHTML = jogadores
     .map((p,i)=>`<div class="list-box-item">
-      <span><b>${p.name} (${p.position})</b> | OVR: ${p.overall} | Ritmo: ${p.pace} | Defesa: ${p.def}</span>
+      <span>${p.name}</span>
       <button class="leilao-jogador-btn ${p.selected?'remover':''}" onclick="toggleLeilaoJogador(${i})">
         ${p.selected?'Remover':'Selecionar'}
       </button>
-    </div>`)
-    .join('');
+    </div>`).join('');
 }
 window.toggleLeilaoJogador = function(idx){
   jogadores[idx].selected = !jogadores[idx].selected;
@@ -123,7 +130,7 @@ window.iniciarLeilao = function(){
   toast("Leilão iniciado!");
 };
 
-// Painel do leilão
+// Painel de leilão + chat
 function renderAuctionPlayer() {
   const p = leilao[currentPlayerIndex];
   const card = document.getElementById('auctionPlayerCard');
@@ -138,14 +145,14 @@ function renderAuctionPlayer() {
   document.getElementById('passBtn').disabled = false;
   card.innerHTML =
     `<div class="list-box-item" style="background:#ff660021;">
-      <span style="font-weight:bold">${p.name} (${p.position})</span>
-      <span>OVR: <b>${p.overall}</b> | Ritmo: <b>${p.pace}</b> | Defesa: <b>${p.def}</b></span>
+      <span style="font-weight:bold">${p.name}</span>
     </div>
-    <div style="margin-top:8px;font-size:1.08em;">
+    <div style="margin-top:8px;">
       Lance atual: <b style="color:#ff6600;">${p.bids.length ? 'R$'+Math.max(...p.bids) : '---'}</b>
     </div>`;
   renderBids();
 }
+
 window.placeBid = function(){
   const bidInput = document.getElementById('bidValue');
   const bid = Number(bidInput.value);
@@ -157,11 +164,14 @@ window.placeBid = function(){
     bidInput.value = '';
     toast(`Lance R$${bid} registrado!`);
     renderAuctionPlayer();
+    addChatMsg(nomeUsuarioAtual, `deu um lance de R$${bid} em ${p.name}`);
+    renderChat();
   } else {
     toast(`O lance deve ser maior que o atual/lance mínimo!`);
   }
 };
 window.passBid = function(){
+  addChatMsg(nomeUsuarioAtual, `passou o jogador ${leilao[currentPlayerIndex].name}`);
   currentPlayerIndex++;
   if(currentPlayerIndex >= leilao.length) {
     document.getElementById('auctionPlayerCard').innerHTML = "<strong style='font-size:1.2em;color:#fd913d;'>Fim dos leilões!</strong>";
@@ -169,9 +179,12 @@ window.passBid = function(){
     document.getElementById('passBtn').style.display = "none";
     document.getElementById('bidValue').style.display = "none";
     toast("Leilão encerrado!");
+    addChatMsg("SISTEMA", "O leilão foi encerrado!");
+    renderChat();
   } else {
     renderAuctionPlayer();
     toast("Você passou este jogador!");
+    renderChat();
   }
 };
 function renderBids() {
@@ -181,4 +194,14 @@ function renderBids() {
         p.bids.map((b,i) => `<li style="margin-bottom:6px;">Lance ${i+1}: <b style="color:#fd913d;">R$${b}</b></li>`).join('') +
       "</ul>"
     : "<p>Seja o primeiro a dar lance!</p>";
+}
+
+// Chat global do leilão
+function addChatMsg(user, texto){
+  chatMsgs.push({user,texto,horario:new Date().toLocaleTimeString()});
+}
+function renderChat(){
+  document.getElementById('chatGlobal').innerHTML = chatMsgs
+    .map(m=>`<div class="chat-msg"><b>${m.user}</b> <span style="color:#fd913d">@${m.horario}:</span> ${m.texto}</div>`)
+    .join('');
 }
