@@ -24,39 +24,29 @@
       <h2>Bem-vindo ao <span class="accent">Leilão EA FC 26</span></h2>
       <div class="input-group">
         <span class="input-icon">👤</span>
-        <input type="text" id="userNameInput" placeholder="Seu nome" autocomplete="off"/>
+        <input type="text" id="userNameInput" autocomplete="off" placeholder="Seu nome"/>
       </div>
       <button class="main-btn" onclick="enterAuction()">Entrar</button>
       <p class="tip">Digite <b>ADM</b> para painel administrativo</p>
     </section>
-    
-    <!-- Tela inicial para todos: lista, saldo -->
+
+    <!-- Lobby dos jogadores -->
     <section id="userLobby" class="glass-card glass-card-center hidden animated">
       <h2><span class="accent">Participantes</span></h2>
       <ul id="userList" class="list-box"></ul>
-      <h3 style="margin-top:18px;">Saldos de cada usuário</h3>
-      <ul id="userBalanceList" class="list-box"></ul>
     </section>
 
-    <!-- Painel ADM: escolher jogadores para leilão, saldo participantes -->
+    <!-- Painel ADM: jogadores por posição, confirmação de leilão, participantes -->
     <section id="adminPanel" class="glass-card glass-card-center hidden animated">
       <h2>Painel do <span class="accent">Administrador</span></h2>
-      <h3 style="margin-bottom:8px;">Participantes e saldo</h3>
+      <h3 style="margin-bottom:10px;">Participantes</h3>
       <ul id="admUserList" class="list-box"></ul>
-      <form id="addUserMoneyForm" class="flex-col" style="margin-bottom:16px;">
-        <div class="input-group">
-          <span class="input-icon">👤</span>
-          <input type="text" id="admUserNameMoney" placeholder="Nome do participante" required autocomplete="off"/>
-          <span class="input-icon">💰</span>
-          <input type="number" id="admUserMoney" placeholder="Saldo" required min="1"/>
-        </div>
-        <button type="submit" class="main-btn">Atualizar saldo</button>
-      </form>
-      <h3 style="margin:14px 0 7px 0;">Jogadores disponíveis</h3>
-      <div id="admJogadorList" class="list-box"></div>
-      <h3 style="margin:18px 0 8px 0;">Seleção para leilão</h3>
-      <div id="leilaoSelectList" class="list-box"></div>
-      <button class="main-btn" onclick="iniciarLeilao()" style="margin-top:10px;">Iniciar Leilão</button>
+
+      <h3 style="margin:18px 0 7px 0;">Jogadores por posição</h3>
+      <div id="admJogadoresPorPosicao"></div>
+      <button class="main-btn" onclick="confirmarLeilao()" style="margin:15px 0 18px 0;">Confirmar lista do leilão</button>
+      <h3 style="margin-bottom:10px;">Jogadores selecionados para leilão</h3>
+      <ul id="leilaoConfirmados" class="list-box"></ul>
     </section>
 
     <!-- Painel de Leilão + Chat -->
@@ -70,13 +60,12 @@
         <button class="main-btn outline" onclick="passBid()" id="passBtn">Passar</button>
       </div>
       <div id="bidsList" class="list-box"></div>
-      <h3 style="margin:18px 0 10px 0;">Chat do Leilão</h3>
+      <h3 style="margin:18px 0 7px 0;">Chat do Leilão</h3>
       <div class="chat-box" id="chatGlobal"></div>
     </section>
   </main>
 
   <div id="toast" class="toast hidden"></div>
-
   <script src="script.js"></script>
 </body>
 </html>
