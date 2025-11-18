@@ -5,44 +5,64 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Leilão FC</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Inter:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header>
-    <img src="logo_leilao_fc.jpg" alt="Logo do Leilão" id="siteLogo" onerror="this.style.display='none'; alert('Imagem logo_leilao_fc.jpg não carregou. Confira nome e pasta!')">
-    <h1>Leilão FC</h1>
-    <button id="btnLogout" class="logout hidden">Sair</button>
+  <header class="main-header">
+    <div class="nav-content">
+      <div class="brand">
+        <img src="logo_leilao_fc.jpg" alt="Logo do Leilão" id="siteLogo">
+        <span class="site-title">Leilão FC</span>
+      </div>
+      <button id="btnLogout" class="logout-btn hidden">Sair</button>
+    </div>
   </header>
 
-  <!-- Entrada pelo nome -->
-  <section id="entrySection" class="glass">
-    <h2>Entre com seu nome:</h2>
-    <input type="text" id="userNameInput" placeholder="Seu nome" autocomplete="off"/>
-    <button onclick="enterAuction()">Entrar</button>
-  </section>
+  <main>
+    <!-- Nome de entrada -->
+    <section id="entrySection" class="glass-card glass-card-center animated">
+      <h2>Bem-vindo ao <span class="accent">Leilão FC</span></h2>
+      <div class="input-group">
+        <span class="input-icon">👤</span>
+        <input type="text" id="userNameInput" placeholder="Seu nome" autocomplete="off"/>
+      </div>
+      <button class="main-btn" onclick="enterAuction()">Entrar</button>
+      <p class="tip">Digite <b>ADM</b> para painel de administrador</p>
+    </section>
 
-  <!-- Aba ADM -->
-  <section id="adminPanel" class="glass hidden">
-    <h2>Painel do Administrador</h2>
-    <form id="addPlayerForm">
-      <input type="text" id="playerName" placeholder="Nome do Jogador" required autocomplete="off"/>
-      <input type="number" id="playerValue" placeholder="Valor Inicial" required min="1"/>
-      <button type="submit">Adicionar Jogador</button>
-    </form>
-    <div id="adminPlayersList"></div>
-  </section>
+    <!-- Painel ADM -->
+    <section id="adminPanel" class="glass-card glass-card-center hidden animated">
+      <h2>Painel do <span class="accent">Administrador</span></h2>
+      <form id="addPlayerForm" class="flex-col">
+        <div class="input-group">
+          <span class="input-icon">🎯</span>
+          <input type="text" id="playerName" placeholder="Nome do Jogador" required autocomplete="off"/>
+        </div>
+        <div class="input-group">
+          <span class="input-icon">💲</span>
+          <input type="number" id="playerValue" placeholder="Valor Inicial" required min="1"/>
+        </div>
+        <button type="submit" class="main-btn">Adicionar Jogador</button>
+      </form>
+      <div id="adminPlayersList" class="list-box"></div>
+    </section>
 
-  <!-- Painel de Leilão -->
-  <section id="auctionPanel" class="glass hidden">
-    <h2>Leilão de Jogadores</h2>
-    <div id="auctionPlayerCard"></div>
-    <label>
-      Lance:
-      <input type="number" id="bidValue" min="1"/>
-      <button onclick="placeBid()">Dar Lance</button>
-      <button onclick="passBid()" class="passBtn">Passar</button>
-    </label>
-    <div id="bidsList"></div>
-  </section>
+    <!-- Painel de Leilão -->
+    <section id="auctionPanel" class="glass-card glass-card-center hidden animated">
+      <h2><span class="accent">Leilão de Jogadores</span></h2>
+      <div id="auctionPlayerCard"></div>
+      <div class="input-group">
+        <span class="input-icon">💸</span>
+        <input type="number" id="bidValue" min="1" placeholder="Seu lance"/>
+        <button class="main-btn" onclick="placeBid()">Dar Lance</button>
+        <button class="main-btn outline" onclick="passBid()" id="passBtn">Passar</button>
+      </div>
+      <div id="bidsList" class="list-box"></div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
 
   <script src="script.js"></script>
 </body>
