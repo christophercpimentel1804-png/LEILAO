@@ -1,13 +1,11 @@
-let users = [];
 let players = [];
-let bids = [];
 let currentPlayerIndex = 0;
 let isAdmin = false;
 
 // Entrada pelo nome
 function enterAuction() {
   const name = document.getElementById('userNameInput').value.trim();
-  if (!name) return alert("Digite o nome!");
+  if (!name) { alert("Digite o nome!"); return; }
   hide('entrySection');
   show('btnLogout');
   if (name.toLowerCase() === "adm") {
@@ -33,11 +31,12 @@ document.getElementById('addPlayerForm').onsubmit = function(e) {
   e.preventDefault();
   const name = document.getElementById('playerName').value.trim();
   const value = Number(document.getElementById('playerValue').value);
-  if (!name || value < 0) return alert("Nome e valor obrigatórios!");
+  if (!name || value < 1) { alert("Nome e valor obrigatórios!"); return;}
   players.push({ name, value, bids: [] });
   renderAdminPlayers();
   document.getElementById('addPlayerForm').reset();
 };
+
 function renderAdminPlayers() {
   const container = document.getElementById('adminPlayersList');
   if (players.length === 0) return container.innerHTML = "<em>Nenhum jogador cadastrado...</em>";
@@ -58,29 +57,22 @@ function renderAuctionPlayer() {
      <p>Lance atual: <strong>${p.bids.length ? 'R$'+Math.max(...p.bids) : '---'}</strong></p>`;
   renderBids();
 }
+
 function placeBid() {
   const bidInput = document.getElementById('bidValue');
   const bid = Number(bidInput.value);
   const p = players[currentPlayerIndex];
+  if (!p) return;
   const minBid = p.bids.length ? Math.max(...p.bids)+1 : p.value;
   if (bid >= minBid) {
     p.bids.push(bid);
     renderAuctionPlayer();
     bidInput.value = '';
   } else {
-    alert("Lance deve ser maior que valor base/lance atual!");
+    alert("O lance deve ser maior que o valor base/lance atual!");
   }
 }
 function passBid() {
-  nextPlayer();
-}
-function renderBids() {
-  const p = players[currentPlayerIndex];
-  document.getElementById('bidsList').innerHTML = p.bids.length
-    ? "<ul>" + p.bids.map((b,i) => `<li>Usuário${i+1}: R$${b}</li>`).join('') + "</ul>"
-    : "<p>Seja o primeiro a dar lance!</p>";
-}
-function nextPlayer() {
   currentPlayerIndex++;
   if (currentPlayerIndex >= players.length) {
     document.getElementById('auctionPlayerCard').innerHTML = "<strong>Fim dos leilões!</strong>";
@@ -89,4 +81,10 @@ function nextPlayer() {
   } else {
     renderAuctionPlayer();
   }
+}
+function renderBids() {
+  const p = players[currentPlayerIndex];
+  document.getElementById('bidsList').innerHTML = p.bids.length
+    ? "<ul>" + p.bids.map((b,i) => `<li>Usuário${i+1}: R$${b}</li>`).join('') + "</ul>"
+    : "<p>Seja o primeiro a dar lance!</p>";
 }
