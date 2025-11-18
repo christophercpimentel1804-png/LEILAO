@@ -8,7 +8,7 @@
 </head>
 <body>
   <header>
-    <img src="logo_leilao_fc.jpg" alt="Logo do Leilão" id="siteLogo">
+    <img src="logo_leilao_fc.jpg" alt="Logo do Leilão" id="siteLogo" onerror="this.style.display='none'; alert('Imagem logo_leilao_fc.jpg não carregou. Confira nome e pasta!')">
     <h1>Leilão FC</h1>
     <button id="btnLogout" class="logout hidden">Sair</button>
   </header>
@@ -16,7 +16,7 @@
   <!-- Entrada pelo nome -->
   <section id="entrySection" class="glass">
     <h2>Entre com seu nome:</h2>
-    <input type="text" id="userNameInput" placeholder="Seu nome" />
+    <input type="text" id="userNameInput" placeholder="Seu nome" autocomplete="off"/>
     <button onclick="enterAuction()">Entrar</button>
   </section>
 
@@ -24,8 +24,8 @@
   <section id="adminPanel" class="glass hidden">
     <h2>Painel do Administrador</h2>
     <form id="addPlayerForm">
-      <input type="text" id="playerName" placeholder="Nome do Jogador" required />
-      <input type="number" id="playerValue" placeholder="Valor Inicial" required />
+      <input type="text" id="playerName" placeholder="Nome do Jogador" required autocomplete="off"/>
+      <input type="number" id="playerValue" placeholder="Valor Inicial" required min="1"/>
       <button type="submit">Adicionar Jogador</button>
     </form>
     <div id="adminPlayersList"></div>
@@ -37,7 +37,7 @@
     <div id="auctionPlayerCard"></div>
     <label>
       Lance:
-      <input type="number" id="bidValue"/>
+      <input type="number" id="bidValue" min="1"/>
       <button onclick="placeBid()">Dar Lance</button>
       <button onclick="passBid()" class="passBtn">Passar</button>
     </label>
