@@ -1,8 +1,34 @@
-let players = [];
+let players = [
+  {
+    name: "Courtois",
+    value: 1000,
+    overall: 89, img: "https://cdn.futbin.com/content/fifa26/img/players/200052.png",
+    position: "GOL",
+    stats: { REF: 86, MAOS: 87, POS: 88, VEL: 59, PES: 77 },
+    bids: []
+  },
+  {
+    name: "Nuno Mendes",
+    value: 1100,
+    overall: 86, img: "https://cdn.futbin.com/content/fifa26/img/players/234549.png",
+    position: "LE",
+    stats: { RIT: 92, DEF: 80, PAS: 83, DRI: 81, FIS: 82 },
+    bids: []
+  },
+  {
+    name: "Mbappé",
+    value: 2000,
+    overall: 91, img: "https://cdn.futbin.com/content/fifa26/img/players/231747.png",
+    position: "ATA",
+    stats: { RIT: 97, FIN: 91, PAS: 82, DRI: 93, FIS: 83 },
+    bids: []
+  }
+];
 let currentPlayerIndex = 0;
+let arrematados = [];
 let isAdmin = false;
 
-// Função toast animado
+// Toast animado
 function toast(msg) {
   const t = document.getElementById('toast');
   t.innerHTML = msg;
@@ -20,11 +46,12 @@ function enterAuction() {
     show('adminPanel');
     isAdmin = true;
     toast("Bem-vindo, ADM!");
+    renderAdminPlayers();
   } else {
     show('auctionPanel');
     renderAuctionPlayer();
     isAdmin = false;
-    toast(`Boa sorte, ${name || "jogador"}!`);
+    toast(`Boa sorte, ${name.split(" ")[0]}!`);
   }
 }
 
@@ -39,8 +66,20 @@ document.getElementById('addPlayerForm').onsubmit = function(e) {
   e.preventDefault();
   const name = document.getElementById('playerName').value.trim();
   const value = Number(document.getElementById('playerValue').value);
-  if (!name || value < 1) { toast("Nome e valor obrigatórios!"); return;}
-  players.push({ name, value, bids: [] });
+  const overall = Number(document.getElementById('playerOverall').value);
+  const position = document.getElementById('playerPosition').value || "MID";
+  // Stats dummy para cadastrar facilmente
+  const pace = Number(document.getElementById('playerPace').value);
+  if (!name || value < 1 || overall < 50 || !position) {
+    toast("Preencha todos os campos corretamente!");
+    return;
+  }
+  players.push({
+    name, value, overall, img:"https://cdn.futbin.com/content/fifa26/img/players/unknown.png",
+    position,
+    stats: { Ritmo: pace },
+    bids: []
+  });
   renderAdminPlayers();
   document.getElementById('addPlayerForm').reset();
   toast(`Jogador ${name} adicionado!`);
@@ -53,38 +92,55 @@ function renderAdminPlayers() {
     return;
   }
   container.innerHTML = players.map(
-    (p,i) => `<div class="list-box-item">
-      <b>${p.name}</b> <span>💲 <b>R$${p.value}</b></span>
-      </div>`
+    (p,i) => `<div class="player-card-eafc">
+      <img src="${p.img}" alt="${p.name}" class="card-avatar">
+      <div class="card-info">
+        <div>
+          <span class="card-ovr">${p.overall}</span>
+          <span class="card-name">${p.name}</span>
+          <span class="card-pos">${p.position}</span>
+        </div>
+        <div class="card-stats">
+          ${Object.entries(p.stats).map(([k,v]) => `<span>${k}: <b>${v}</b></span>`).join('')}
+        </div>
+        <div class="card-value">Valor base: R$ ${p.value}</div>
+      </div>
+    </div>`
   ).join('');
 }
 
-// Leilão de jogadores
+// Leilão de jogadores (cards EA FC)
 function renderAuctionPlayer() {
   const p = players[currentPlayerIndex];
   const card = document.getElementById('auctionPlayerCard');
   if (!p) {
-    card.innerHTML = "<em>Aguardando jogadores cadastrados...</em>";
+    card.innerHTML = "<em>Todos os leilões encerrados!</em>";
     document.getElementById('bidValue').disabled = true;
     document.getElementById('passBtn').disabled = true;
+    hide("auctionPanel");
+    show("teamSection");
+    renderTeamGrid();
+    toast("Leilão encerrado!");
     return;
   }
   document.getElementById('bidValue').disabled = false;
   document.getElementById('passBtn').disabled = false;
-
-  card.innerHTML = `
-    <div class="list-box-item" style="background:#ff660021;">
-      <span style="font-size:1.18em;font-weight:bold;letter-spacing:1px; color:#fff;">
-        Jogador: <span style="color:var(--orange);">${p.name}</span>
-      </span>
-      <span style="font-size:1.08em; margin-left:24px;">
-        Valor base: <b style="color:#fd913d;">R$${p.value}</b>
-      </span>
-    </div>
-    <div style="margin-top:8px;font-size:1.08em;">
-      <span>Lance atual: <b style="color:#ff6600;">${p.bids.length ? 'R$'+Math.max(...p.bids) : '---'}</b></span>
-    </div>
-  `;
+  card.innerHTML =
+    `<div class="player-card-eafc">
+      <img src="${p.img}" alt="${p.name}" class="card-avatar">
+      <div class="card-info">
+        <div>
+          <span class="card-ovr">${p.overall}</span>
+          <span class="card-name">${p.name}</span>
+          <span class="card-pos">${p.position}</span>
+        </div>
+        <div class="card-stats">
+          ${Object.entries(p.stats).map(([k,v]) => `<span>${k}: <b>${v}</b></span>`).join('')}
+        </div>
+        <div class="card-value">Valor base: R$ ${p.value}</div>
+        <div>Lance atual: <b style="color:#ff6600;">${p.bids.length ? 'R$'+Math.max(...p.bids) : '---'}</b></div>
+      </div>
+    </div>`;
   renderBids();
 }
 
@@ -96,9 +152,10 @@ function placeBid() {
   const minBid = p.bids.length ? Math.max(...p.bids)+1 : p.value;
   if (bid >= minBid) {
     p.bids.push(bid);
-    renderAuctionPlayer();
     bidInput.value = '';
     toast(`Lance R$${bid} registrado!`);
+    arrematados.push(p);
+    renderAuctionPlayer();
   } else {
     toast(`O lance deve ser maior que o atual!`);
   }
@@ -106,10 +163,9 @@ function placeBid() {
 function passBid() {
   currentPlayerIndex++;
   if (currentPlayerIndex >= players.length) {
-    document.getElementById('auctionPlayerCard').innerHTML = "<strong style='font-size:1.2em;color:#fd913d;'>Fim dos leilões!</strong>";
-    document.getElementById('bidsList').innerHTML = "";
-    document.getElementById('passBtn').style.display = "none";
-    document.getElementById('bidValue').style.display = "none";
+    hide("auctionPanel");
+    show("teamSection");
+    renderTeamGrid();
     toast("Leilão encerrado!");
   } else {
     renderAuctionPlayer();
@@ -118,9 +174,31 @@ function passBid() {
 }
 function renderBids() {
   const p = players[currentPlayerIndex];
-  document.getElementById('bidsList').innerHTML = p.bids.length
+  document.getElementById('bidsList').innerHTML = p && p.bids.length
     ? "<ul style='padding-left:6px;'>" +
         p.bids.map((b,i) => `<li style="margin-bottom:6px;">Lance ${i+1}: <b style="color:#fd913d;">R$${b}</b></li>`).join('') +
       "</ul>"
     : "<p>Seja o primeiro a dar lance!</p>";
+}
+
+// Time dos sonhos pós-leilão
+function renderTeamGrid() {
+  const grid = document.getElementById('teamGrid');
+  if (arrematados.length === 0) {
+    grid.innerHTML = "<em>Você não conquistou nenhum jogador!</em>";
+    return;
+  }
+  grid.innerHTML = `<div class="team-grid">
+    ${arrematados.map(p =>
+      `<div class="player-card-eafc">
+        <img src="${p.img}" alt="${p.name}" class="card-avatar">
+        <div class="card-info">
+          <span class="card-ovr">${p.overall}</span>
+          <span class="card-name">${p.name}</span>
+          <span class="card-pos">${p.position}</span>
+          <div>${Object.entries(p.stats).map(([k,v]) => `<span>${k}: <b>${v}</b></span>`).join('')}</div>
+        </div>
+      </div>`
+    ).join('')}
+    </div>`;
 }
