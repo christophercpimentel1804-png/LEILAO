@@ -1,0 +1,64 @@
+:root {
+  --glass-light: rgba(255,255,255,0.7);
+  --glass-dark: rgba(20,20,40,0.75);
+  --accent: linear-gradient(90deg, #6A59FF 0%, #3537A4 100%);
+  --terroso: #e28057;
+  --metal: #dbe8fa;
+  --text-dark: #232323;
+  --text-light: #FDFDFD;
+  --bg-light: #F5F3EE;
+  --bg-dark: #131316;
+}
+body {
+  margin: 0; font-family: 'Inter', Arial, sans-serif;
+  background: var(--bg-light);
+  color: var(--text-dark);
+  min-height: 100vh; transition: background .5s, color .5s;
+}
+body.dark {
+  background: var(--bg-dark);
+  color: var(--text-light);
+}
+header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 24px 5vw 0 5vw;
+}
+header h1 { font-size: 2.15rem; font-family: 'Montserrat', Arial, sans-serif; background: var(--accent); background-clip: text; -webkit-text-fill-color: transparent;}
+#themeToggle { font-size: 1.3rem; background: none; border: none; cursor: pointer;}
+.glass {
+  background: var(--glass-light);
+  backdrop-filter: blur(7px);
+  border-radius: 24px;
+  box-shadow: 0 4px 24px rgba(40,40,70,0.19), 0 1px 0 var(--metal);
+  padding: 32px 24px; margin: 32px auto;
+  max-width: 480px; transition: background .5s;
+}
+body.dark .glass {
+  background: var(--glass-dark);
+  box-shadow: 0 4px 24px rgba(40,40,70,0.25), 0 1px 0 #8ca0b8;
+}
+input, select, button {
+  margin: 12px 0; padding: 12px 16px;
+  border-radius: 8px; border: 1px solid #ccc; font-size: 1rem;
+}
+button { background: var(--accent); color: #fff; border: none; font-weight: bold; cursor: pointer;}
+button:hover { outline: 2px solid var(--terroso);}
+.hidden { display: none !important;}
+#notification {
+  position: fixed; top: 5vh; right: 8vw;
+  background: var(--accent);
+  color: #fff; padding: 18px 26px; border-radius: 20px;
+  font-weight: bold; box-shadow: 0 2px 16px #23223223;
+  animation: fadeIn .7s;
+  z-index: 1000;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-30px);}
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (max-width: 600px) {
+  .glass { max-width: 95vw; padding: 12vw 3vw;}
+  header { padding: 16px 3vw 0 3vw;}
+  #notification { right: 5vw; top: 3vh;}
+}
+
