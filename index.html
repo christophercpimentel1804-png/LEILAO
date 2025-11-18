@@ -19,6 +19,14 @@
   </header>
 
   <main>
+    <!-- Senha do ADM -->
+    <section id="admSenhaSection" class="glass-card glass-card-center hidden animated">
+      <h2>Login ADM</h2>
+      <input type="password" id="admSenhaInput" placeholder="Senha de acesso" autocomplete="off"/>
+      <button class="main-btn" onclick="entrarPainelADM()">Entrar</button>
+      <p class="tip">Senha padrão: <b>1804</b></p>
+    </section>
+
     <!-- Entrada pelo nome -->
     <section id="entrySection" class="glass-card glass-card-center animated">
       <h2>Bem-vindo ao <span class="accent">Leilão EA FC 26</span></h2>
@@ -34,6 +42,7 @@
     <section id="userLobby" class="glass-card glass-card-center hidden animated">
       <h2><span class="accent">Participantes</span></h2>
       <ul id="userList" class="list-box"></ul>
+      <div id="userFormation" class="formation-grid"></div>
     </section>
 
     <!-- Painel ADM: jogadores por posição, confirmação de leilão, participantes -->
