@@ -3,63 +3,47 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Leilão de Jogadores</title>
+  <title>Leilão FC</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body class="light">
+<body>
   <header>
-    <h1>Leilão de Jogadores</h1>
-    <button id="themeToggle" aria-label="Alternar tema">🌙</button>
+    <img src="logo_leilao_fc.jpg" alt="Logo do Leilão" id="siteLogo">
+    <h1>Leilão FC</h1>
+    <button id="btnLogout" class="logout hidden">Sair</button>
   </header>
 
-  <!-- Login/Cadastro -->
-  <section id="loginSection" class="glass">
-    <h2>Login</h2>
-    <input type="email" placeholder="Email" id="loginEmail"/>
-    <input type="password" placeholder="Senha" id="loginPassword"/>
-    <button onclick="login()">Entrar</button>
+  <!-- Entrada pelo nome -->
+  <section id="entrySection" class="glass">
+    <h2>Entre com seu nome:</h2>
+    <input type="text" id="userNameInput" placeholder="Seu nome" />
+    <button onclick="enterAuction()">Entrar</button>
   </section>
 
-  <!-- Dashboard ADM (apenas exibido se ADM logado) -->
-  <section id="adminDashboard" class="glass hidden">
+  <!-- Aba ADM -->
+  <section id="adminPanel" class="glass hidden">
     <h2>Painel do Administrador</h2>
-    <form id="auctionForm">
-      <input type="text" placeholder="Nome do Leilão" required />
-      <input type="number" placeholder="Valor Base" required />
-      <select>
-        <option>Tempo: 60s</option>
-        <option>Tempo: 90s</option>
-        <option>Tempo: 120s</option>
-      </select>
-      <button type="submit">Criar Leilão</button>
+    <form id="addPlayerForm">
+      <input type="text" id="playerName" placeholder="Nome do Jogador" required />
+      <input type="number" id="playerValue" placeholder="Valor Inicial" required />
+      <button type="submit">Adicionar Jogador</button>
     </form>
-    <div id="auctionsList"></div>
+    <div id="adminPlayersList"></div>
   </section>
 
-  <!-- Página de Leilão -->
-  <section id="auctionSection" class="glass hidden">
-    <h2>Leilão Ativo</h2>
-    <div id="playerAuctionCard"></div>
+  <!-- Painel de Leilão -->
+  <section id="auctionPanel" class="glass hidden">
+    <h2>Leilão de Jogadores</h2>
+    <div id="auctionPlayerCard"></div>
     <label>
       Lance:
       <input type="number" id="bidValue"/>
       <button onclick="placeBid()">Dar Lance</button>
+      <button onclick="passBid()" class="passBtn">Passar</button>
     </label>
     <div id="bidsList"></div>
-    <button onclick="closeAuction()">Encerrar Leilão</button>
   </section>
-
-  <!-- Ranking de Times -->
-  <section id="rankingSection" class="glass hidden">
-    <h2>Ranking de Times</h2>
-    <div id="teamsRanking"></div>
-  </section>
-
-  <!-- Notificação flutuante -->
-  <div id="notification" class="hidden"></div>
 
   <script src="script.js"></script>
 </body>
 </html>
-
-
