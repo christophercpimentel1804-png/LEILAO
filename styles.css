@@ -40,11 +40,6 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-#siteLogo {
-  height: 54px; width: 54px; border-radius: 16px; object-fit: cover;
-  border: 3px solid var(--orange); background: var(--black);
-  box-shadow: 0 2px 12px #fd913db4;
-}
 .logout-btn {
   background: var(--orange);
   color: var(--white);
@@ -56,11 +51,9 @@ body {
 }
 .logout-btn:hover { background:#fd913d; transform: scale(1.05);}
 main {
-  padding-top: 110px; /* Header offset */
+  padding-top: 100px;
   display: flex; flex-direction: column; align-items: center; min-height:70vh;
 }
-
-/* Glass Card design */
 .glass-card {
   background: var(--glass-dark);
   border-radius: 24px;
@@ -69,49 +62,31 @@ main {
   backdrop-filter: blur(14px);
   margin-bottom: 36px;
   min-width: 330px;
-  max-width: 420px;
-  width: 96vw;
+  max-width: 440px;
+  width: 98vw;
   padding: 39px 32px 32px 32px;
   position: relative;
   animation: fadeInUp .9s;
 }
 .glass-card-center { margin: 42px auto 0 auto; }
-
-@keyframes fadeInUp {
-  from {opacity: 0; transform: translateY(40px);}
-  to {opacity:1; transform: translateY(0);}
-}
-
-/* Input group styling */
-.input-group {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom:24px;
-}
-.input-icon {
-  font-size: 1.35em;
-  color: var(--orangeSoft);
-  margin-right: 2px;
-}
+.input-group { display:flex; align-items:center; gap:12px; margin-bottom:20px;}
+.input-icon { font-size:1.2em; color:var(--orangeSoft);}
 input[type="text"], input[type="number"] {
   background: #fff8ed;
   color: var(--deepBlack);
-  border: 1.8px solid #fd913d;
+  border: 2px solid #fd913d;
   border-radius: 14px;
   font-size: 1.08em;
   padding: 12px 14px;
   font-family: 'Inter', Arial, sans-serif;
   font-weight: 700;
-  width: 160px;
+  width: 130px;
   outline: none;
   transition: border .2s;
 }
 input:focus { border: 2.5px solid #ff6600; }
 .flex-col { display: flex; flex-direction: column; gap: 15px;}
 .tip { font-size: .92em; color: #ff6600bc; margin-top: 6px; }
-
-/* Main Buttons */
 .main-btn {
   background: var(--accentgradient);
   box-shadow: 0 2px 12px #fe634980;
@@ -122,9 +97,8 @@ input:focus { border: 2.5px solid #ff6600; }
   padding: 13px 26px;
   cursor: pointer; position: relative;
   transition: transform .2s, box-shadow .2s, background .2s;
-  margin-right: 12px;
+  margin-right: 9px;
 }
-.main-btn:active { transform: scale(.98);}
 .main-btn.outline {
   background: transparent;
   color: var(--orange);
@@ -135,71 +109,46 @@ input:focus { border: 2.5px solid #ff6600; }
   background: var(--orangeSoft);
   color: var(--white);
 }
-
-/* List box / Player list */
-.list-box {
-  width: 100%;
-  margin: 28px 0 0 0;
-  padding-left:0;
-}
+.list-box { width: 100%; margin: 20px 0 0 0; padding-left:0;}
 .list-box-item {
   background: #ff660011;
   color: var(--white);
   border-radius: 14px;
   margin-bottom: 9px;
   padding: 12px 18px;
-  font-size: 1.12em;
+  font-size: 1.10em;
   display: flex; align-items: center; justify-content: space-between;
-  border: 1.8px solid #ff660059;
-  box-shadow: 0 2px 10px #fd913d30;
+  border: 2px solid #ff660053;
+  box-shadow: 0 2px 10px #fd913d20;
 }
-
-/* EA FC Cards */
-.player-card-eafc {
-  background: linear-gradient(120deg, #181818 85%, #ff6600 100%);
-  border-radius: 18px;
-  border: 2.5px solid #ff6600;
-  box-shadow: 0 10px 38px #ff660066;
-  display: flex; align-items: center; gap: 16px;
-  padding: 24px 16px;
-  margin-bottom: 22px;
+.leilao-jogador-btn {
+  background: var(--orange);
+  border: none;
+  font-weight: bold;
+  border-radius:14px;
+  color: var(--white);
+  cursor:pointer;
+  margin-left:13px;
+  padding:4px 19px;
+  transition: background .2s;
 }
-.card-avatar {
-  width: 70px; height: 70px; border-radius: 14px;
-  border: 2px solid #fff;
-  background: #222;
-  box-shadow: 0 2px 10px #fd913d55;
-  object-fit: cover;
-}
-.card-info { flex: 1; }
-.card-ovr {
-  font-size: 1.75em; font-weight: bold; color: #fd913d;
-}
-.card-name {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1.18em; font-weight: bold; color: #fff; margin-left: 7px;
-}
-.card-pos { font-weight: bold; color: #ff6600; margin-left: 13px;}
-.card-stats span { margin-right: 8px; color: #fff;}
-.card-value { color: #ff6600; font-weight: bold; margin-top:7px;}
-.team-grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content:center; margin-top:18px;}
-
+.leilao-jogador-btn.remover { background:#181818; border:2px solid #ff6600; color:#ff6600;}
+.leilao-jogador-btn:hover { background:#fd913d;}
 .accent {
   background: var(--accentgradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: 800;
 }
-
 .toast {
   position: fixed; top: 30px; right: 34px;
   background: var(--accentgradient);
   color: var(--white);
   font-weight: bold;
   padding: 18px 36px;
-  font-size: 1.22em;
+  font-size: 1.20em;
   border-radius: 24px;
-  box-shadow: 0 4px 16px #fd913d95;
+  box-shadow: 0 4px 16px #fd913d70;
   z-index: 1000;
   animation: fadeIn .5s;
 }
@@ -207,16 +156,15 @@ input:focus { border: 2.5px solid #ff6600; }
   from {opacity:0; transform:translateY(-50px);}
   to {opacity:1; transform:translateY(0);}
 }
-
+@keyframes fadeInUp {
+  from {opacity: 0; transform: translateY(40px);}
+  to {opacity:1; transform: translateY(0);}
+}
 .hidden { display: none !important;}
-
-/* Responsividade */
 @media (max-width: 700px) {
   main {padding-top:82px;}
-  .glass-card {max-width: 98vw; min-width:unset; padding:7vw 3vw;}
-  .nav-content {padding:10px 7vw;}
+  .glass-card {max-width: 99vw; min-width:unset; padding:7vw 2vw;}
+  .nav-content {padding:10px 5vw;}
   .site-title {font-size:1.16rem;}
-  #siteLogo {height:34px; width:34px;}
-  .toast {right: 5vw; top: 18px; padding: 13px 13vw;}
-  .player-card-eafc {flex-direction: column; align-items: flex-start;}
+  .toast {right: 5vw; top: 16px; padding: 11px 7vw;}
 }
