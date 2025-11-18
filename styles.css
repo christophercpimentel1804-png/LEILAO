@@ -154,7 +154,36 @@ input:focus { border: 2.5px solid #ff6600; }
   box-shadow: 0 2px 10px #fd913d30;
 }
 
-/* Accent and Highlights */
+/* EA FC Cards */
+.player-card-eafc {
+  background: linear-gradient(120deg, #181818 85%, #ff6600 100%);
+  border-radius: 18px;
+  border: 2.5px solid #ff6600;
+  box-shadow: 0 10px 38px #ff660066;
+  display: flex; align-items: center; gap: 16px;
+  padding: 24px 16px;
+  margin-bottom: 22px;
+}
+.card-avatar {
+  width: 70px; height: 70px; border-radius: 14px;
+  border: 2px solid #fff;
+  background: #222;
+  box-shadow: 0 2px 10px #fd913d55;
+  object-fit: cover;
+}
+.card-info { flex: 1; }
+.card-ovr {
+  font-size: 1.75em; font-weight: bold; color: #fd913d;
+}
+.card-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.18em; font-weight: bold; color: #fff; margin-left: 7px;
+}
+.card-pos { font-weight: bold; color: #ff6600; margin-left: 13px;}
+.card-stats span { margin-right: 8px; color: #fff;}
+.card-value { color: #ff6600; font-weight: bold; margin-top:7px;}
+.team-grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content:center; margin-top:18px;}
+
 .accent {
   background: var(--accentgradient);
   -webkit-background-clip: text;
@@ -162,7 +191,6 @@ input:focus { border: 2.5px solid #ff6600; }
   font-weight: 800;
 }
 
-/* Toast/feedback */
 .toast {
   position: fixed; top: 30px; right: 34px;
   background: var(--accentgradient);
@@ -187,7 +215,8 @@ input:focus { border: 2.5px solid #ff6600; }
   main {padding-top:82px;}
   .glass-card {max-width: 98vw; min-width:unset; padding:7vw 3vw;}
   .nav-content {padding:10px 7vw;}
-  .site-title {font-size:1.25rem;}
+  .site-title {font-size:1.16rem;}
   #siteLogo {height:34px; width:34px;}
   .toast {right: 5vw; top: 18px; padding: 13px 13vw;}
+  .player-card-eafc {flex-direction: column; align-items: flex-start;}
 }
