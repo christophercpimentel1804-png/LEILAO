@@ -1,69 +1,222 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Leilão FC</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Inter:wght@400;700&display=swap" rel="stylesheet">
-</head>
-<body>
-  <header class="main-header">
-    <div class="nav-content">
-      <div class="brand">
-        <img src="logo_leilao_fc.jpg" alt="Logo do Leilão" id="siteLogo">
-        <span class="site-title">Leilão FC</span>
-      </div>
-      <button id="btnLogout" class="logout-btn hidden">Sair</button>
-    </div>
-  </header>
+:root {
+  --orange: #ff6600;
+  --orangeSoft: #fd913d;
+  --black: #131316;
+  --deepBlack: #181818;
+  --white: #fff;
+  --glass: rgba(255,255,255,0.10);
+  --glass-dark: rgba(40,40,40,0.75);
+  --cardshadow: 0 8px 32px 0 rgba(31, 38, 135, 0.28);
+  --borderGlass: 2.5px solid #ff6600;
+  --accentgradient: linear-gradient(90deg, #ff6600 10%, #fe6349 70%, #fd913d 100%);
+}
+body {
+  margin: 0;
+  background: var(--black);
+  color: var(--white);
+  font-family: 'Inter', Arial, sans-serif;
+  min-height: 100vh;
+}
+.main-header {
+  position: fixed; top:0; left:0; right:0;
+  background: var(--deepBlack);
+  box-shadow: 0 4px 16px rgba(40,40,40,.24);
+  z-index: 100;
+}
+.nav-content {
+  max-width: 1280px; margin: 0 auto;
+  padding: 16px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.brand {
+  display: flex; align-items: center;
+  gap: 14px;
+}
+.site-title {
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 2.1rem;
+  font-weight: 800;
+  background: var(--accentgradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+#siteLogo {
+  height: 54px; width: 54px; border-radius: 16px; object-fit: cover;
+  border: 3px solid var(--orange); background: var(--black);
+  box-shadow: 0 2px 12px #fd913db4;
+}
+.logout-btn {
+  background: var(--orange);
+  color: var(--white);
+  font-weight: bold; font-size: 1.2rem;
+  border-radius: 22px; border: none; padding: 12px 36px;
+  box-shadow: 0 2px 12px #fe634954;
+  cursor: pointer; letter-spacing:1px;
+  transition: background .2s, transform .2s;
+}
+.logout-btn:hover { background:#fd913d; transform: scale(1.05);}
+main {
+  padding-top: 110px; /* Header offset */
+  display: flex; flex-direction: column; align-items: center; min-height:70vh;
+}
 
-  <main>
-    <!-- Nome de entrada -->
-    <section id="entrySection" class="glass-card glass-card-center animated">
-      <h2>Bem-vindo ao <span class="accent">Leilão FC</span></h2>
-      <div class="input-group">
-        <span class="input-icon">👤</span>
-        <input type="text" id="userNameInput" placeholder="Seu nome" autocomplete="off"/>
-      </div>
-      <button class="main-btn" onclick="enterAuction()">Entrar</button>
-      <p class="tip">Digite <b>ADM</b> para painel de administrador</p>
-    </section>
+/* Glass Card design */
+.glass-card {
+  background: var(--glass-dark);
+  border-radius: 24px;
+  border: var(--borderGlass);
+  box-shadow: var(--cardshadow);
+  backdrop-filter: blur(14px);
+  margin-bottom: 36px;
+  min-width: 330px;
+  max-width: 420px;
+  width: 96vw;
+  padding: 39px 32px 32px 32px;
+  position: relative;
+  animation: fadeInUp .9s;
+}
+.glass-card-center { margin: 42px auto 0 auto; }
 
-    <!-- Painel ADM -->
-    <section id="adminPanel" class="glass-card glass-card-center hidden animated">
-      <h2>Painel do <span class="accent">Administrador</span></h2>
-      <form id="addPlayerForm" class="flex-col">
-        <div class="input-group">
-          <span class="input-icon">🎯</span>
-          <input type="text" id="playerName" placeholder="Nome do Jogador" required autocomplete="off"/>
-        </div>
-        <div class="input-group">
-          <span class="input-icon">💲</span>
-          <input type="number" id="playerValue" placeholder="Valor Inicial" required min="1"/>
-        </div>
-        <button type="submit" class="main-btn">Adicionar Jogador</button>
-      </form>
-      <div id="adminPlayersList" class="list-box"></div>
-    </section>
+@keyframes fadeInUp {
+  from {opacity: 0; transform: translateY(40px);}
+  to {opacity:1; transform: translateY(0);}
+}
 
-    <!-- Painel de Leilão -->
-    <section id="auctionPanel" class="glass-card glass-card-center hidden animated">
-      <h2><span class="accent">Leilão de Jogadores</span></h2>
-      <div id="auctionPlayerCard"></div>
-      <div class="input-group">
-        <span class="input-icon">💸</span>
-        <input type="number" id="bidValue" min="1" placeholder="Seu lance"/>
-        <button class="main-btn" onclick="placeBid()">Dar Lance</button>
-        <button class="main-btn outline" onclick="passBid()" id="passBtn">Passar</button>
-      </div>
-      <div id="bidsList" class="list-box"></div>
-    </section>
-  </main>
+/* Input group styling */
+.input-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom:24px;
+}
+.input-icon {
+  font-size: 1.35em;
+  color: var(--orangeSoft);
+  margin-right: 2px;
+}
+input[type="text"], input[type="number"] {
+  background: #fff8ed;
+  color: var(--deepBlack);
+  border: 1.8px solid #fd913d;
+  border-radius: 14px;
+  font-size: 1.08em;
+  padding: 12px 14px;
+  font-family: 'Inter', Arial, sans-serif;
+  font-weight: 700;
+  width: 160px;
+  outline: none;
+  transition: border .2s;
+}
+input:focus { border: 2.5px solid #ff6600; }
+.flex-col { display: flex; flex-direction: column; gap: 15px;}
+.tip { font-size: .92em; color: #ff6600bc; margin-top: 6px; }
 
-  <div id="toast" class="toast hidden"></div>
+/* Main Buttons */
+.main-btn {
+  background: var(--accentgradient);
+  box-shadow: 0 2px 12px #fe634980;
+  color: var(--white);
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size:1.05em; font-weight: bold;
+  border-radius: 18px; border: none;
+  padding: 13px 26px;
+  cursor: pointer; position: relative;
+  transition: transform .2s, box-shadow .2s, background .2s;
+  margin-right: 12px;
+}
+.main-btn:active { transform: scale(.98);}
+.main-btn.outline {
+  background: transparent;
+  color: var(--orange);
+  border: 2px solid var(--orange);
+  box-shadow: none;
+}
+.main-btn.outline:hover {
+  background: var(--orangeSoft);
+  color: var(--white);
+}
 
-  <script src="script.js"></script>
-</body>
-</html>
+/* List box / Player list */
+.list-box {
+  width: 100%;
+  margin: 28px 0 0 0;
+  padding-left:0;
+}
+.list-box-item {
+  background: #ff660011;
+  color: var(--white);
+  border-radius: 14px;
+  margin-bottom: 9px;
+  padding: 12px 18px;
+  font-size: 1.12em;
+  display: flex; align-items: center; justify-content: space-between;
+  border: 1.8px solid #ff660059;
+  box-shadow: 0 2px 10px #fd913d30;
+}
+
+/* EA FC Cards */
+.player-card-eafc {
+  background: linear-gradient(120deg, #181818 85%, #ff6600 100%);
+  border-radius: 18px;
+  border: 2.5px solid #ff6600;
+  box-shadow: 0 10px 38px #ff660066;
+  display: flex; align-items: center; gap: 16px;
+  padding: 24px 16px;
+  margin-bottom: 22px;
+}
+.card-avatar {
+  width: 70px; height: 70px; border-radius: 14px;
+  border: 2px solid #fff;
+  background: #222;
+  box-shadow: 0 2px 10px #fd913d55;
+  object-fit: cover;
+}
+.card-info { flex: 1; }
+.card-ovr {
+  font-size: 1.75em; font-weight: bold; color: #fd913d;
+}
+.card-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.18em; font-weight: bold; color: #fff; margin-left: 7px;
+}
+.card-pos { font-weight: bold; color: #ff6600; margin-left: 13px;}
+.card-stats span { margin-right: 8px; color: #fff;}
+.card-value { color: #ff6600; font-weight: bold; margin-top:7px;}
+.team-grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content:center; margin-top:18px;}
+
+.accent {
+  background: var(--accentgradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+}
+
+.toast {
+  position: fixed; top: 30px; right: 34px;
+  background: var(--accentgradient);
+  color: var(--white);
+  font-weight: bold;
+  padding: 18px 36px;
+  font-size: 1.22em;
+  border-radius: 24px;
+  box-shadow: 0 4px 16px #fd913d95;
+  z-index: 1000;
+  animation: fadeIn .5s;
+}
+@keyframes fadeIn {
+  from {opacity:0; transform:translateY(-50px);}
+  to {opacity:1; transform:translateY(0);}
+}
+
+.hidden { display: none !important;}
+
+/* Responsividade */
+@media (max-width: 700px) {
+  main {padding-top:82px;}
+  .glass-card {max-width: 98vw; min-width:unset; padding:7vw 3vw;}
+  .nav-content {padding:10px 7vw;}
+  .site-title {font-size:1.16rem;}
+  #siteLogo {height:34px; width:34px;}
+  .toast {right: 5vw; top: 18px; padding: 13px 13vw;}
+  .player-card-eafc {flex-direction: column; align-items: flex-start;}
+}
