@@ -7,11 +7,60 @@ const jogadoresPosicoes = {
   "Atacantes": ["Haaland","Kane","Lewandowski","Lautaro","Isak","Guirassy","Osimhen","Gyokeres","Alvarez","Son","Thuram","Schick","Lukaku","Sorloth","Lookman","Openda","Mateta","David","Talisca","Kolo Muani","Rashford"]
 };
 
+// Posições e colunas/linhas para cada formação
 const formacoes = {
-  '4-3-3': ['GOL','LE','ZAG','ZAG','LD','MC','MC','MC','ATA','ATA','ATA'],
-  '4-4-2': ['GOL','LE','ZAG','ZAG','LD','MC','MC','ME','MD','ATA','ATA'],
-  '3-5-2': ['GOL','ZAG','ZAG','ZAG','MC','MC','MC','ME','MD','ATA','ATA'],
-  '4-2-3-1': ['GOL','LE','ZAG','ZAG','LD','MC','MC','ME','MD','MO','ATA']
+  '4-3-3': [
+    { pos: 'GOL', col:2, row:4 },
+    { pos: 'LE', col:1, row:3 },
+    { pos: 'ZAG', col:2, row:3 },
+    { pos: 'ZAG', col:3, row:3 },
+    { pos: 'LD', col:4, row:3 },
+    { pos: 'MC', col:1, row:2 },
+    { pos: 'MC', col:2, row:2 },
+    { pos: 'MC', col:3, row:2 },
+    { pos: 'ATA', col:2, row:1 },
+    { pos: 'ATA', col:3, row:1 },
+    { pos: 'ATA', col:4, row:1 },
+  ],
+  '4-4-2': [
+    { pos: 'GOL', col:2, row:4 },
+    { pos: 'LE', col:1, row:3 },
+    { pos: 'ZAG', col:2, row:3 },
+    { pos: 'ZAG', col:3, row:3 },
+    { pos: 'LD', col:4, row:3 },
+    { pos: 'ME', col:1, row:2 },
+    { pos: 'MC', col:2, row:2 },
+    { pos: 'MC', col:3, row:2 },
+    { pos: 'MD', col:4, row:2 },
+    { pos: 'ATA', col:2, row:1 },
+    { pos: 'ATA', col:3, row:1 },
+  ],
+  '3-5-2': [
+    { pos: 'GOL', col:2, row:4 },
+    { pos: 'ZAG', col:1, row:3 },
+    { pos: 'ZAG', col:2, row:3 },
+    { pos: 'ZAG', col:3, row:3 },
+    { pos: 'ME', col:1, row:2 },
+    { pos: 'MC', col:2, row:2 },
+    { pos: 'MC', col:3, row:2 },
+    { pos: 'MD', col:4, row:2 },
+    { pos: 'MO', col:2, row:1 },
+    { pos: 'ATA', col:3, row:1 },
+    { pos: 'ATA', col:4, row:1 }
+  ],
+  '4-2-3-1': [
+    { pos: 'GOL', col:2, row:4 },
+    { pos: 'LE', col:1, row:3 },
+    { pos: 'ZAG', col:2, row:3 },
+    { pos: 'ZAG', col:3, row:3 },
+    { pos: 'LD', col:4, row:3 },
+    { pos: 'MC', col:2, row:2 },
+    { pos: 'MC', col:3, row:2 },
+    { pos: 'ME', col:1, row:2 },
+    { pos: 'MD', col:4, row:2 },
+    { pos: 'MO', col:3, row:1 },
+    { pos: 'ATA', col:2, row:1 }
+  ]
 };
 
 let jogadores = Object.entries(jogadoresPosicoes)
@@ -23,7 +72,6 @@ let currentPlayerIndex = 0;
 let isAdmin = false;
 let nomeUsuarioAtual = "";
 
-// Painel ADM com senha
 function entrarPainelADM(){
   const senha = document.getElementById('admSenhaInput').value.trim();
   if(senha==="1804"){
@@ -34,7 +82,6 @@ function entrarPainelADM(){
   }
 }
 
-// Entrada pelo nome
 function enterAuction(){
   const name=document.getElementById('userNameInput').value.trim();
   if(!name){toast("Digite o nome!");return;}
@@ -70,7 +117,6 @@ function trocarFormacao(){
     toast("Formação alterada!");
   }
 }
-
 document.getElementById('btnLogout').onclick = ()=>location.reload();
 function show(id){document.getElementById(id).classList.remove('hidden');}
 function hide(id){document.getElementById(id).classList.add('hidden');}
@@ -94,7 +140,7 @@ function renderADMJogadoresPorPosicao(){
         return `<span style="display:inline-block;margin:3px;">
         <button class="leilao-jogador-btn ${jogadores[idx].selected?'remover':''}" onclick="toggleLeilaoJogador(${idx})">
         ${jogadores[idx].selected?'✓':'+'}</button>
-        ${nome} </span>`;
+        ${nome}</span>`;
       }).join('')}
     </div>`;
   }
@@ -186,21 +232,25 @@ function renderChat(){
     `<div class="chat-msg"><b>${m.user}</b> <span style="color:#fd913d">@${m.horario}:</span> ${m.texto}</div>`).join('');
 }
 
-// Formação grid dinâmico
+// Campo tático dinâmico
 function renderUserFormation(){
   let idx = users.findIndex(u=>u.name===nomeUsuarioAtual);
   if(idx===-1)return;
-  const formacaoAtiva = users[idx].formacao||'4-3-3';
+  const formacaoAtiva = users[idx].formacao || '4-3-3';
   const map = formacoes[formacaoAtiva];
   const jogs = users[idx].jogadores || [];
   let grid = document.getElementById('userFormation');
   grid.innerHTML="";
-  grid.style.gridTemplateColumns="repeat(4,1fr)";
-  grid.style.gridTemplateRows="repeat(3,60px)";
-  for(let i=0;i<map.length;i++){
-    let cell = document.createElement("div");
+  grid.style.display = "grid";
+  grid.style.gridTemplateColumns = "repeat(4, 1fr)";
+  grid.style.gridTemplateRows = "repeat(4, 60px)";
+  for (let i = 0; i < map.length; i++) {
+    const cell = document.createElement("div");
     cell.className = "formation-cell";
-    cell.textContent = jogs[i]?jogs[i].name:`${map[i]}`;
+    cell.style.gridColumn = map[i].col;
+    cell.style.gridRow = map[i].row;
+    const jogador = jogs[i]?.name || "";
+    cell.textContent = jogador ? jogador : map[i].pos;
     grid.appendChild(cell);
   }
 }
