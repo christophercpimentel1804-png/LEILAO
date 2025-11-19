@@ -7,65 +7,98 @@ const jogadoresPosicoes = {
   "Atacantes": ["Haaland","Kane","Lewandowski","Lautaro","Isak","Guirassy","Osimhen","Gyokeres","Alvarez","Son","Thuram","Schick","Lukaku","Sorloth","Lookman","Openda","Mateta","David","Talisca","Kolo Muani","Rashford"]
 };
 
-// Posições e colunas/linhas para cada formação
+// Formações táticas (de baixo para cima: GOL no fundo, ATA no ataque)
 const formacoes = {
-  '4-3-3': [
-    { pos: 'GOL', col:2, row:4 },
-    { pos: 'LE', col:1, row:3 },
-    { pos: 'ZAG', col:2, row:3 },
-    { pos: 'ZAG', col:3, row:3 },
-    { pos: 'LD', col:4, row:3 },
-    { pos: 'MC', col:1, row:2 },
-    { pos: 'MC', col:2, row:2 },
-    { pos: 'MC', col:3, row:2 },
-    { pos: 'ATA', col:2, row:1 },
-    { pos: 'ATA', col:3, row:1 },
-    { pos: 'ATA', col:4, row:1 },
-  ],
-  '4-4-2': [
-    { pos: 'GOL', col:2, row:4 },
-    { pos: 'LE', col:1, row:3 },
-    { pos: 'ZAG', col:2, row:3 },
-    { pos: 'ZAG', col:3, row:3 },
-    { pos: 'LD', col:4, row:3 },
-    { pos: 'ME', col:1, row:2 },
-    { pos: 'MC', col:2, row:2 },
-    { pos: 'MC', col:3, row:2 },
-    { pos: 'MD', col:4, row:2 },
-    { pos: 'ATA', col:2, row:1 },
-    { pos: 'ATA', col:3, row:1 },
-  ],
-  '3-5-2': [
-    { pos: 'GOL', col:2, row:4 },
-    { pos: 'ZAG', col:1, row:3 },
-    { pos: 'ZAG', col:2, row:3 },
-    { pos: 'ZAG', col:3, row:3 },
-    { pos: 'ME', col:1, row:2 },
-    { pos: 'MC', col:2, row:2 },
-    { pos: 'MC', col:3, row:2 },
-    { pos: 'MD', col:4, row:2 },
-    { pos: 'MO', col:2, row:1 },
-    { pos: 'ATA', col:3, row:1 },
-    { pos: 'ATA', col:4, row:1 }
-  ],
-  '4-2-3-1': [
-    { pos: 'GOL', col:2, row:4 },
-    { pos: 'LE', col:1, row:3 },
-    { pos: 'ZAG', col:2, row:3 },
-    { pos: 'ZAG', col:3, row:3 },
-    { pos: 'LD', col:4, row:3 },
-    { pos: 'MC', col:2, row:2 },
-    { pos: 'MC', col:3, row:2 },
-    { pos: 'ME', col:1, row:2 },
-    { pos: 'MD', col:4, row:2 },
-    { pos: 'MO', col:3, row:1 },
-    { pos: 'ATA', col:2, row:1 }
-  ]
+  '4-3-3': {
+    grid: 'repeat(5, 1fr)',
+    rows: 'repeat(5, 1fr)',
+    posicoes: [
+      { pos: 'ATA', col:'1', row:'1' },
+      { pos: 'ATA', col:'3', row:'1' },
+      { pos: 'ATA', col:'5', row:'1' },
+      { pos: 'MC', col:'1', row:'2' },
+      { pos: 'MC', col:'3', row:'2' },
+      { pos: 'MC', col:'5', row:'2' },
+      { pos: 'LE', col:'1', row:'4' },
+      { pos: 'ZAG', col:'2', row:'4' },
+      { pos: 'ZAG', col:'4', row:'4' },
+      { pos: 'LD', col:'5', row:'4' },
+      { pos: 'GOL', col:'3', row:'5' }
+    ]
+  },
+  '4-4-2': {
+    grid: 'repeat(5, 1fr)',
+    rows: 'repeat(5, 1fr)',
+    posicoes: [
+      { pos: 'ATA', col:'2', row:'1' },
+      { pos: 'ATA', col:'4', row:'1' },
+      { pos: 'ME', col:'1', row:'2' },
+      { pos: 'MC', col:'2', row:'2' },
+      { pos: 'MC', col:'4', row:'2' },
+      { pos: 'MD', col:'5', row:'2' },
+      { pos: 'LE', col:'1', row:'4' },
+      { pos: 'ZAG', col:'2', row:'4' },
+      { pos: 'ZAG', col:'4', row:'4' },
+      { pos: 'LD', col:'5', row:'4' },
+      { pos: 'GOL', col:'3', row:'5' }
+    ]
+  },
+  '3-5-2': {
+    grid: 'repeat(5, 1fr)',
+    rows: 'repeat(5, 1fr)',
+    posicoes: [
+      { pos: 'ATA', col:'2', row:'1' },
+      { pos: 'ATA', col:'4', row:'1' },
+      { pos: 'ME', col:'1', row:'2' },
+      { pos: 'MC', col:'2', row:'2' },
+      { pos: 'MC', col:'3', row:'2' },
+      { pos: 'MC', col:'4', row:'2' },
+      { pos: 'MD', col:'5', row:'2' },
+      { pos: 'ZAG', col:'2', row:'4' },
+      { pos: 'ZAG', col:'3', row:'4' },
+      { pos: 'ZAG', col:'4', row:'4' },
+      { pos: 'GOL', col:'3', row:'5' }
+    ]
+  },
+  '4-2-3-1': {
+    grid: 'repeat(5, 1fr)',
+    rows: 'repeat(5, 1fr)',
+    posicoes: [
+      { pos: 'ATA', col:'3', row:'1' },
+      { pos: 'ME', col:'1', row:'2' },
+      { pos: 'MO', col:'3', row:'2' },
+      { pos: 'MD', col:'5', row:'2' },
+      { pos: 'MC', col:'2', row:'3' },
+      { pos: 'MC', col:'4', row:'3' },
+      { pos: 'LE', col:'1', row:'4' },
+      { pos: 'ZAG', col:'2', row:'4' },
+      { pos: 'ZAG', col:'4', row:'4' },
+      { pos: 'LD', col:'5', row:'4' },
+      { pos: 'GOL', col:'3', row:'5' }
+    ]
+  },
+  '5-3-2': {
+    grid: 'repeat(5, 1fr)',
+    rows: 'repeat(5, 1fr)',
+    posicoes: [
+      { pos: 'ATA', col:'2', row:'1' },
+      { pos: 'ATA', col:'4', row:'1' },
+      { pos: 'MC', col:'2', row:'2' },
+      { pos: 'MC', col:'3', row:'2' },
+      { pos: 'MC', col:'4', row:'2' },
+      { pos: 'LE', col:'1', row:'4' },
+      { pos: 'ZAG', col:'2', row:'4' },
+      { pos: 'ZAG', col:'3', row:'4' },
+      { pos: 'ZAG', col:'4', row:'4' },
+      { pos: 'LD', col:'5', row:'4' },
+      { pos: 'GOL', col:'3', row:'5' }
+    ]
+  }
 };
 
 let jogadores = Object.entries(jogadoresPosicoes)
   .flatMap(([pos,arr])=>arr.map(n=>({name:n,pos,selected:false,bids:[],comprador:null})));
-let users = []; // [{name, jogadores:[...], formacao}]
+let users = [];
 let chatMsgs = [];
 let leilao = [];
 let currentPlayerIndex = 0;
@@ -93,13 +126,14 @@ function enterAuction(){
     let idx = users.findIndex(u=>u.name===name);
     if(idx===-1){
       users.push({name:name,jogadores:[],formacao:'4-3-3'});
-      setupFormationSelect();
     }
+    setupFormationSelect();
     show('userLobby');renderUsersLobby();
     toast(`Bem-vindo, ${name.split(" ")[0]}!`);
     if(isAdmin)renderADMUsers();
   }
 }
+
 function setupFormationSelect(){
   const sel=document.getElementById('formationSelect');
   sel.innerHTML="";
@@ -108,7 +142,12 @@ function setupFormationSelect(){
     op.value=f;op.textContent=f;
     sel.appendChild(op);
   });
+  let idx = users.findIndex(u=>u.name===nomeUsuarioAtual);
+  if(idx!==-1){
+    sel.value = users[idx].formacao;
+  }
 }
+
 function trocarFormacao(){
   let idx = users.findIndex(u=>u.name===nomeUsuarioAtual);
   if(idx!==-1){
@@ -117,6 +156,7 @@ function trocarFormacao(){
     toast("Formação alterada!");
   }
 }
+
 document.getElementById('btnLogout').onclick = ()=>location.reload();
 function show(id){document.getElementById(id).classList.remove('hidden');}
 function hide(id){document.getElementById(id).classList.add('hidden');}
@@ -125,11 +165,13 @@ function renderUsersLobby(){
   document.getElementById('userList').innerHTML=users.map(u=>`<li class="list-box-item">${u.name}</li>`).join('');
   renderUserFormation();
 }
+
 function renderADMUsers(){
   document.getElementById('admUserList').innerHTML=users.length==0 ?
     `<li class="list-box-item">Nenhum participante ainda</li>` :
     users.map(u=>`<li class="list-box-item">${u.name}</li>`).join('');
 }
+
 function renderADMJogadoresPorPosicao(){
   let html="";
   for(const [pos,arr] of Object.entries(jogadoresPosicoes)){
@@ -146,14 +188,17 @@ function renderADMJogadoresPorPosicao(){
   }
   document.getElementById('admJogadoresPorPosicao').innerHTML=html;
 }
+
 window.toggleLeilaoJogador=function(idx){
   jogadores[idx].selected=!jogadores[idx].selected;
   renderADMJogadoresPorPosicao();renderADMConfirmados();
 }
+
 function renderADMConfirmados(){
   document.getElementById('leilaoConfirmados').innerHTML=jogadores.filter(j=>j.selected)
     .map(j=>`<li class="list-box-item"><span style="color:#ff6600">${j.pos}</span>: ${j.name}</li>`).join('');
 }
+
 window.confirmarLeilao=function(){
   leilao=jogadores.filter(j=>j.selected);
   if(leilao.length==0){toast("Selecione jogadores para o leilão!");return;}
@@ -182,6 +227,7 @@ function renderAuctionPlayer(){
     </div>`;
   renderBids();
 }
+
 window.placeBid=function(){
   const bidInput=document.getElementById('bidValue');
   const bid=Number(bidInput.value);
@@ -194,70 +240,4 @@ window.placeBid=function(){
     toast(`Lance R$${bid} registrado!`);renderAuctionPlayer();
     addChatMsg(nomeUsuarioAtual,`deu lance de R$${bid} em ${p.name}`);
     renderChat();
-    // Ao final, define comprador:
-    p.comprador = nomeUsuarioAtual;
-    let idxUser = users.findIndex(u=>u.name===nomeUsuarioAtual);
-    if(idxUser!==-1){
-      users[idxUser].jogadores = users[idxUser].jogadores||[];
-      users[idxUser].jogadores.push(p);
-      renderUserFormation();
-    }
-  }else{toast(`Lance deve ser maior que o atual/min!`);}
-};
-window.passBid=function(){
-  addChatMsg(nomeUsuarioAtual,`passou o jogador ${leilao[currentPlayerIndex].name}`);
-  currentPlayerIndex++;
-  if(currentPlayerIndex>=leilao.length){
-    document.getElementById('auctionPlayerCard').innerHTML="<strong style='font-size:1.2em;color:#fd913d;'>Fim dos leilões!</strong>";
-    document.getElementById('bidsList').innerHTML="";
-    document.getElementById('passBtn').style.display="none";
-    document.getElementById('bidValue').style.display="none";
-    toast("Leilão encerrado!");addChatMsg("SISTEMA","Leilão encerrado!");renderChat();
-  }else{
-    renderAuctionPlayer();toast("Você passou esse jogador!");renderChat();
-  }
-};
-function renderBids(){
-  const p=leilao[currentPlayerIndex];
-  document.getElementById('bidsList').innerHTML=p&&p.bids.length
-    ?"<ul style='padding-left:6px;'>"+p.bids.map((b,i)=>
-      `<li style="margin-bottom:6px;">${b.usuario}: <b style="color:#fd913d;">R$${b.valor}</b></li>`).join('')+"</ul>"
-    :"<p>Seja o primeiro a dar lance!</p>";
-}
-function addChatMsg(user,texto){
-  chatMsgs.push({user,texto,horario:new Date().toLocaleTimeString()});
-}
-function renderChat(){
-  document.getElementById('chatGlobal').innerHTML=chatMsgs.map(m=>
-    `<div class="chat-msg"><b>${m.user}</b> <span style="color:#fd913d">@${m.horario}:</span> ${m.texto}</div>`).join('');
-}
-
-// Campo tático dinâmico
-function renderUserFormation(){
-  let idx = users.findIndex(u=>u.name===nomeUsuarioAtual);
-  if(idx===-1)return;
-  const formacaoAtiva = users[idx].formacao || '4-3-3';
-  const map = formacoes[formacaoAtiva];
-  const jogs = users[idx].jogadores || [];
-  let grid = document.getElementById('userFormation');
-  grid.innerHTML="";
-  grid.style.display = "grid";
-  grid.style.gridTemplateColumns = "repeat(4, 1fr)";
-  grid.style.gridTemplateRows = "repeat(4, 60px)";
-  for (let i = 0; i < map.length; i++) {
-    const cell = document.createElement("div");
-    cell.className = "formation-cell";
-    cell.style.gridColumn = map[i].col;
-    cell.style.gridRow = map[i].row;
-    const jogador = jogs[i]?.name || "";
-    cell.textContent = jogador ? jogador : map[i].pos;
-    grid.appendChild(cell);
-  }
-}
-
-// Toast animado
-function toast(msg){
-  const t=document.getElementById('toast');
-  t.innerHTML=msg;t.classList.remove('hidden');
-  setTimeout(()=>t.classList.add('hidden'),1700);
-}
+    p.comprador = nome
