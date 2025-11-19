@@ -19,12 +19,11 @@
   </header>
 
   <main>
-    <!-- Senha do ADM -->
+    <!-- Senha do ADM: Não exibida -->
     <section id="admSenhaSection" class="glass-card glass-card-center hidden animated">
       <h2>Login ADM</h2>
       <input type="password" id="admSenhaInput" placeholder="Senha de acesso" autocomplete="off"/>
       <button class="main-btn" onclick="entrarPainelADM()">Entrar</button>
-      <p class="tip">Senha padrão: <b>1804</b></p>
     </section>
 
     <!-- Entrada pelo nome -->
@@ -35,13 +34,19 @@
         <input type="text" id="userNameInput" autocomplete="off" placeholder="Seu nome"/>
       </div>
       <button class="main-btn" onclick="enterAuction()">Entrar</button>
-      <p class="tip">Digite <b>ADM</b> para painel administrativo</p>
+      <p class="tip">Se for ADM, digite o nome e continue normalmente.</p>
     </section>
 
-    <!-- Lobby dos jogadores -->
+    <!-- Lobby dos jogadores, formação customizável -->
     <section id="userLobby" class="glass-card glass-card-center hidden animated">
       <h2><span class="accent">Participantes</span></h2>
       <ul id="userList" class="list-box"></ul>
+      <hr>
+      <div class="formacao-box">
+        <label>Escolha sua formação:</label>
+        <select id="formationSelect"></select>
+        <button class="main-btn" onclick="trocarFormacao()">Mudar Formação</button>
+      </div>
       <div id="userFormation" class="formation-grid"></div>
     </section>
 
