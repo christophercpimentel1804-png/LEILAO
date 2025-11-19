@@ -19,10 +19,10 @@
   </header>
 
   <main>
-    <!-- Senha do ADM: Não exibida -->
+    <!-- Senha do ADM (não fica visível!) -->
     <section id="admSenhaSection" class="glass-card glass-card-center hidden animated">
       <h2>Login ADM</h2>
-      <input type="password" id="admSenhaInput" placeholder="Senha de acesso" autocomplete="off"/>
+      <input type="password" id="admSenhaInput" placeholder="Senha do administrador" autocomplete="off"/>
       <button class="main-btn" onclick="entrarPainelADM()">Entrar</button>
     </section>
 
@@ -34,7 +34,7 @@
         <input type="text" id="userNameInput" autocomplete="off" placeholder="Seu nome"/>
       </div>
       <button class="main-btn" onclick="enterAuction()">Entrar</button>
-      <p class="tip">Se for ADM, digite o nome e continue normalmente.</p>
+      <p class="tip">Se for ADM, digite o nome "ADM" e continue.</p>
     </section>
 
     <!-- Lobby dos jogadores, formação customizável -->
@@ -50,15 +50,14 @@
       <div id="userFormation" class="formation-grid"></div>
     </section>
 
-    <!-- Painel ADM: jogadores por posição, confirmação de leilão, participantes -->
+    <!-- Painel ADM -->
     <section id="adminPanel" class="glass-card glass-card-center hidden animated">
       <h2>Painel do <span class="accent">Administrador</span></h2>
       <h3 style="margin-bottom:10px;">Participantes</h3>
       <ul id="admUserList" class="list-box"></ul>
-
       <h3 style="margin:18px 0 7px 0;">Jogadores por posição</h3>
       <div id="admJogadoresPorPosicao"></div>
-      <button class="main-btn" onclick="confirmarLeilao()" style="margin:15px 0 18px 0;">Confirmar lista do leilão</button>
+      <button class="main-btn" onclick="confirmarLeilao()" style="margin:15px 0 18px 0;">Confirmar Leilão</button>
       <h3 style="margin-bottom:10px;">Jogadores selecionados para leilão</h3>
       <ul id="leilaoConfirmados" class="list-box"></ul>
     </section>
